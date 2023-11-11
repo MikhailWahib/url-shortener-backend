@@ -5,6 +5,7 @@ import cors from "cors"
 import routes from "./routes"
 import { db } from "./db"
 import { createUrlsTable } from "./db/lib"
+import { logger } from "./middlewares/logger"
 
 dotenv.config()
 
@@ -15,6 +16,7 @@ const port = process.env.PORT || 3000
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
+app.use(logger)
 
 // routes
 app.use(routes)
