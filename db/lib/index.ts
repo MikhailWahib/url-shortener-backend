@@ -29,7 +29,7 @@ export const insertUrlToDB = async (url: string, req?: any) => {
 
 	return {
 		id: result.rows[0].id,
-		url: result.rows[0].url,
+		originalUrl: result.rows[0].url,
 		// send current domain name with the shortened url
 		shortUrl: `${req.protocol}://${req.get("host")}/s/${
 			result.rows[0].short_url
@@ -40,7 +40,5 @@ export const insertUrlToDB = async (url: string, req?: any) => {
 export const getUrlFromDB = async (shortUrl: string) => {
 	const query = `SELECT url FROM urls WHERE short_url = $1;`
 	const result = await db.query(query, [shortUrl])
-	const url = result.rows[0].url
-
-	return url
+	return result
 }

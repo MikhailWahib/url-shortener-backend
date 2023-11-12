@@ -1,8 +1,6 @@
 import { Router } from "express"
-import {
-	handleShortenUrl,
-	handleRedirect,
-} from "../controllers/shortUrlController"
+import { handleShortenUrl } from "../controllers/shortUrlController"
+import { handleRedirect } from "../controllers/handleRedirect"
 
 const router = Router()
 

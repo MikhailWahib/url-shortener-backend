@@ -1,11 +1,12 @@
 import express from "express"
 import dotenv from "dotenv"
 import cors from "cors"
+import { logger } from "./middlewares/logger"
 
 import routes from "./routes"
+
 import { db } from "./db"
 import { createUrlsTable } from "./db/lib"
-import { logger } from "./middlewares/logger"
 
 dotenv.config()
 
@@ -34,3 +35,5 @@ db.connect()
 	.catch((err) => {
 		console.error(err)
 	})
+
+export default app
