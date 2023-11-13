@@ -9,7 +9,6 @@ export const createUrlsTable = async () => {
         );
     `
 	await db.query(query)
-	console.log(await db.query(query))
 	console.log("URLs Table created")
 }
 
