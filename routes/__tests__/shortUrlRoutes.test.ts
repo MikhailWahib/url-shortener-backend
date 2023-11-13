@@ -4,8 +4,8 @@ import request from "supertest"
 
 let shortCode: string
 
-describe("Short Url Router", () => {
-	it("should create a short url", async () => {
+describe("/s", () => {
+	it("POST /s/shorten", async () => {
 		const response = await request(app).post("/s/shorten").send({
 			url: "https://www.google.com",
 		})
@@ -17,7 +17,7 @@ describe("Short Url Router", () => {
 		shortCode = response.body.shortUrl.split("/s/")[1]
 	})
 
-	it("should redirect to the original url", async () => {
+	it("GET /s/shortCode", async () => {
 		const response = await request(app).get("/s/" + shortCode)
 
 		expect(response.status).toBe(302)
