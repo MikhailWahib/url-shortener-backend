@@ -1,12 +1,11 @@
-import { db } from "../../db"
 import app from "../../server"
 import request from "supertest"
 
 let shortCode: string
 
-describe("/s", () => {
-	it("POST /s/shorten", async () => {
-		const response = await request(app).post("/s/shorten").send({
+describe("/api/v1/shorten", () => {
+	it("URL shorten", async () => {
+		const response = await request(app).post("/api/v1/shorten").send({
 			url: "https://www.google.com",
 		})
 
@@ -16,8 +15,10 @@ describe("/s", () => {
 
 		shortCode = response.body.shortUrl.split("/s/")[1]
 	})
+})
 
-	it("GET /s/shortCode", async () => {
+describe("GET /s/{shortCode}", () => {
+	it("Redirect to the original URL", async () => {
 		const response = await request(app).get("/s/" + shortCode)
 
 		expect(response.status).toBe(302)

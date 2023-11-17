@@ -1,14 +1,16 @@
-import { Router } from "express"
-import shortUrlRoutes from "./shortUrlRoutes"
+import { Router, Request, Response } from "express"
 import userRoutes from "./userRoutes"
+import { handleShortenUrl } from "../controllers/shortUrlController"
+import { urlValdiation } from "../controllers/lib"
 
 const router = Router()
 
-router.use("/s", shortUrlRoutes)
+router.post("/shorten", urlValdiation, handleShortenUrl)
+
 router.use("/users", userRoutes)
 
-router.get("/health-check", (req, res) => {
-	res.status(200).json({ message: "Hello World!" })
+router.get("/", async (req: Request, res: Response) => {
+	res.send("Hello World!")
 })
 
 export default router

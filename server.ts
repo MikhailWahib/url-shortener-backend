@@ -1,4 +1,4 @@
-import express from "express"
+import express, { Router, Request, Response } from "express"
 import dotenv from "dotenv"
 import cors from "cors"
 import { logger } from "./middlewares/logger"
@@ -7,6 +7,8 @@ import routes from "./routes"
 
 import { db } from "./db"
 import { createUrlsTable, createUsersTable } from "./db/lib"
+
+import { handleRedirect } from "./controllers/urlRedirectController"
 
 dotenv.config()
 
@@ -20,8 +22,14 @@ app.use(cors())
 app.use(logger)
 
 // routes
-app.use(routes)
+app.use("/api/v1", routes)
+app.get("/s/:shortUrl", handleRedirect)
 
+app.get("/health-check", async (req: Request, res: Response) => {
+	res.status(200).json({ message: "Hello World!" })
+})
+
+// start server
 db.connect()
 	.then(() => {
 		console.log("Database connected ✔")
