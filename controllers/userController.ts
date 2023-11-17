@@ -1,8 +1,9 @@
 import { Request, Response } from "express"
 import { validationResult } from "express-validator"
-import { insertUserToDB } from "../db/lib"
+import { signToken } from "../lib/signToken"
+import { getUserFromDB, insertUserToDB } from "../db/lib"
 
-const handleRegister = async (req: Request, res: Response) => {
+export const handleRegister = async (req: Request, res: Response) => {
 	try {
 		const { username, password } = req.body
 
@@ -30,8 +31,28 @@ const handleRegister = async (req: Request, res: Response) => {
 	}
 }
 
-const handleLogin = async (req: Request, res: Response) => {
-	// TODO
-}
+export const handleLogin = async (req: Request, res: Response) => {
+	const { username, password } = req.body
 
-export { handleRegister, handleLogin }
+	const errors = validationResult(req)
+
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() })
+	}
+
+	const result = await getUserFromDB(username, password)
+
+	if (result.rows.length === 0) {
+		return res.status(401).json({ error: "Invalid username or password" })
+	}
+
+	const user = result.rows[0]
+
+	// Generate JWT token and send it to the client's cookie
+	signToken(user, res)
+
+	res.status(200).json({
+		id: user.id,
+		username: user.username,
+	})
+}

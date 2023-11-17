@@ -1,7 +1,7 @@
 import { QueryResult } from "pg"
 import { db } from ".."
 
-const createUrlsTable = async (): Promise<void> => {
+export const createUrlsTable = async (): Promise<void> => {
 	const query = `
         CREATE TABLE IF NOT EXISTS urls (
             id SERIAL PRIMARY KEY,
@@ -14,7 +14,7 @@ const createUrlsTable = async (): Promise<void> => {
 	console.log("URLs Table created")
 }
 
-const createUsersTable = async (): Promise<void> => {
+export const createUsersTable = async (): Promise<void> => {
 	const query = `
 		CREATE TABLE IF NOT EXISTS users (
 			id SERIAL PRIMARY KEY,
@@ -26,7 +26,7 @@ const createUsersTable = async (): Promise<void> => {
 	console.log("Users Table created")
 }
 
-const insertUrlToDB = async (url: string) => {
+export const insertUrlToDB = async (url: string) => {
 	const shortUrl = Math.random().toString(36).substring(2, 8)
 
 	// check if the url starts with 'https://'
@@ -43,13 +43,15 @@ const insertUrlToDB = async (url: string) => {
 	return result
 }
 
-const getUrlFromDB = async (shortUrl: string): Promise<QueryResult<any>> => {
+export const getUrlFromDB = async (
+	shortUrl: string
+): Promise<QueryResult<any>> => {
 	const query = `SELECT original_url FROM urls WHERE short_url = $1;`
 	const result = await db.query(query, [shortUrl])
 	return result
 }
 
-const insertUserToDB = async (username: string, password: string) => {
+export const insertUserToDB = async (username: string, password: string) => {
 	const exitingUser = await db.query(
 		"SELECT * FROM users WHERE username = $1",
 		[username]
@@ -71,10 +73,8 @@ const insertUserToDB = async (username: string, password: string) => {
 	}
 }
 
-export {
-	createUrlsTable,
-	createUsersTable,
-	insertUrlToDB,
-	getUrlFromDB,
-	insertUserToDB,
+export const getUserFromDB = async (username: string, password: string) => {
+	const query = `SELECT * FROM users WHERE username = $1 AND password = $2;`
+	const result = await db.query(query, [username, password])
+	return result
 }
