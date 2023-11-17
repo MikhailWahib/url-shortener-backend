@@ -26,19 +26,15 @@ export const createUsersTable = async (): Promise<void> => {
 	console.log("Users Table created")
 }
 
-export const insertUrlToDB = async (url: string) => {
-	const shortUrl = Math.random().toString(36).substring(2, 8)
-
-	// check if the url starts with 'https://'
-	let insertedUrl = url
-	if (!insertedUrl.startsWith("https://")) {
-		insertedUrl = `https://${insertedUrl}`
-	}
-
+export const insertUrlToDB = async (
+	originalUrl: string,
+	userId: number,
+	shortUrlCode: string
+) => {
 	const query = `INSERT INTO urls (original_url, user_id,short_url) VALUES ($1, $2, $3) RETURNING *;`
 
 	// insert url - with 'https://' - and short url
-	const result = await db.query(query, [insertedUrl, 1, shortUrl])
+	const result = await db.query(query, [originalUrl, userId, shortUrlCode])
 
 	return result
 }

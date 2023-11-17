@@ -56,3 +56,8 @@ export const handleLogin = async (req: Request, res: Response) => {
 		username: user.username,
 	})
 }
+
+export const handleLogout = async (req: Request, res: Response) => {
+	res.clearCookie("jwt")
+	res.status(200).json({ message: "logged out" })
+}

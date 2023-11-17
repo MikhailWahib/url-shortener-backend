@@ -1,6 +1,7 @@
 import express, { Router, Request, Response } from "express"
 import dotenv from "dotenv"
 import cors from "cors"
+import cookieParser from "cookie-parser"
 import { logger } from "./middlewares/logger"
 
 import routes from "./routes"
@@ -19,6 +20,7 @@ const port = process.env.PORT || 3000
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
+app.use(cookieParser())
 app.use(logger)
 
 // routes
