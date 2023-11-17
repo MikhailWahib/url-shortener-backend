@@ -1,29 +1,51 @@
 import { Request, Response } from "express"
-import { insertUrlToDB } from "../db/lib"
-
-import validator from "validator"
+import { getUrlFromDB, insertUrlToDB } from "../db/lib"
+import { validationResult } from "express-validator"
 
 export const handleShortenUrl = async (req: Request, res: Response) => {
 	try {
 		const { url } = req.body
 
-		if (!validator.isURL(url)) {
-			return res.status(400).json({ error: "Please enter a valid URL" })
+		const errors = validationResult(req)
+
+		if (!errors.isEmpty()) {
+			return res.status(400).json({ errors: errors.array() })
 		}
 
-		if (!url) {
-			return res.status(400).json({ error: "Please enter a valid URL" })
-		}
+		const result = await insertUrlToDB(url)
 
-		const { id, originalUrl, shortUrl } = await insertUrlToDB(url, req)
+		if (result.rows.length === 0) {
+			return res.status(500).json({ error: "Internal server error" })
+		}
 
 		res.status(201).json({
-			id,
-			originalUrl,
-			shortUrl,
+			id: result.rows[0].id,
+			shortUrl: `${req.protocol}://${req.get("host")}/s/${
+				result.rows[0].short_url
+			}`,
+			originalUrl: result.rows[0].original_url,
 		})
 	} catch (error) {
 		console.error(error)
-		res.status(500).json({ error: "Internal server error" })
+	}
+}
+
+export const handleRedirect = async (req: Request, res: Response) => {
+	try {
+		const { shortUrl } = req.params
+
+		if (!shortUrl) {
+			return res.status(404).json({ error: "Short URL not found" })
+		}
+
+		const result = await getUrlFromDB(shortUrl)
+
+		if (result.rows.length === 0) {
+			return res.status(404).json({ error: "Short URL not found" })
+		}
+
+		res.redirect(result.rows[0].original_url)
+	} catch (error) {
+		console.error(error)
 	}
 }

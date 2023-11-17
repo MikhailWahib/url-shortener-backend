@@ -6,7 +6,7 @@ import { logger } from "./middlewares/logger"
 import routes from "./routes"
 
 import { db } from "./db"
-import { createUrlsTable } from "./db/lib"
+import { createUrlsTable, createUsersTable } from "./db/lib"
 
 dotenv.config()
 
@@ -24,7 +24,8 @@ app.use(routes)
 
 db.connect()
 	.then(() => {
-		console.log("Database connected")
+		console.log("Database connected ✔")
+		// createUsersTable()
 		// createUrlsTable()
 	})
 	.then(() => {
