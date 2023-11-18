@@ -32,32 +32,40 @@ export const handleRegister = async (req: Request, res: Response) => {
 }
 
 export const handleLogin = async (req: Request, res: Response) => {
-	const { username, password } = req.body
+	try {
+		const { username, password } = req.body
 
-	const errors = validationResult(req)
+		const errors = validationResult(req)
 
-	if (!errors.isEmpty()) {
-		return res.status(400).json({ errors: errors.array() })
+		if (!errors.isEmpty()) {
+			return res.status(400).json({ errors: errors.array() })
+		}
+
+		const result = await getUserFromDB(username, password)
+
+		if (result.rows.length === 0) {
+			return res.status(401).json({ error: "Invalid username or password" })
+		}
+
+		const user = result.rows[0]
+
+		// Generate JWT token and send it to the client's cookie
+		signToken(user, res)
+
+		res.status(200).json({
+			id: user.id,
+			username: user.username,
+		})
+	} catch (error) {
+		console.error(error)
 	}
-
-	const result = await getUserFromDB(username, password)
-
-	if (result.rows.length === 0) {
-		return res.status(401).json({ error: "Invalid username or password" })
-	}
-
-	const user = result.rows[0]
-
-	// Generate JWT token and send it to the client's cookie
-	signToken(user, res)
-
-	res.status(200).json({
-		id: user.id,
-		username: user.username,
-	})
 }
 
 export const handleLogout = async (req: Request, res: Response) => {
-	res.clearCookie("jwt")
-	res.status(200).json({ message: "logged out" })
+	try {
+		res.clearCookie("jwt")
+		res.status(200).json({ message: "logged out" })
+	} catch (error) {
+		console.error(error)
+	}
 }
