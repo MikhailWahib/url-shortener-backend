@@ -16,7 +16,7 @@ export const protect = (req: Request, res: Response, next: NextFunction) => {
 		const token = req.cookies.jwt
 
 		if (!token) {
-			return res.status(401).json({ message: "Unauthorized" })
+			return res.status(401).json({ error: "Unauthorized" })
 		}
 
 		const decoded: any = jwt.verify(token, jwtSecretKey)
@@ -26,6 +26,6 @@ export const protect = (req: Request, res: Response, next: NextFunction) => {
 		next()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ message: "Invalid token" })
+		return res.status(401).json({ error: "Invalid token" })
 	}
 }

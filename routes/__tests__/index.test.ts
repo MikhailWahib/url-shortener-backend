@@ -19,6 +19,25 @@ describe("POST /api/v1/users", () => {
 		expect(response.body.user.username).toBeDefined()
 	})
 
+	it("Invalid Registration - Missing Username", async () => {
+		const response = await request(app).post("/api/v1/users").send({
+			password: password,
+		})
+
+		expect(response.status).toBe(400)
+		expect(response.body.errors).toBeDefined()
+	})
+
+	it("Invalid Registration - Duplicate Username", async () => {
+		const response = await request(app).post("/api/v1/users").send({
+			username: "john11",
+			password: password,
+		})
+
+		expect(response.status).toBe(400)
+		expect(response.body.error).toBeDefined()
+	})
+
 	it("Login user", async () => {
 		const response = await request(app).post("/api/v1/users/login").send({
 			username: username,
@@ -31,6 +50,16 @@ describe("POST /api/v1/users", () => {
 		expect(response.body.id).toBeDefined()
 		expect(response.body.username).toBeDefined()
 		expect(response.headers["set-cookie"]).toBeDefined()
+	})
+
+	it("Invalid Login - Wrong Password", async () => {
+		const response = await request(app).post("/api/v1/users/login").send({
+			username: username,
+			password: "wrongPassword",
+		})
+
+		expect(response.status).toBe(401)
+		expect(response.body.error).toBeDefined()
 	})
 
 	it("Logout user", async () => {
@@ -55,6 +84,25 @@ describe("POST /api/v1/shorten", () => {
 		expect(response.body.shortUrl).toBeDefined()
 
 		shortCode = response.body.shortUrl.split("/s/")[1]
+	})
+
+	it("Invalid URL Shortening - Missing URL", async () => {
+		const response = await request(app)
+			.post("/api/v1/shorten")
+			.send({})
+			.set("Cookie", authToken)
+
+		expect(response.status).toBe(400)
+		expect(response.body.errors).toBeDefined()
+	})
+
+	it("Invalid URL Shortening - Unauthorized", async () => {
+		const response = await request(app).post("/api/v1/shorten").send({
+			url: "https://www.example.com",
+		})
+
+		expect(response.status).toBe(401)
+		expect(response.body.error).toBeDefined()
 	})
 })
 
