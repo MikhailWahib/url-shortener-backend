@@ -2,7 +2,7 @@ import express, { Router, Request, Response } from "express"
 import dotenv from "dotenv"
 import cors from "cors"
 import cookieParser from "cookie-parser"
-import { logger } from "./middlewares/logger"
+import morgan from "morgan"
 
 import routes from "./routes"
 
@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 app.use(cookieParser())
-app.use(logger)
+app.use(morgan("common"))
 
 // routes
 app.use("/api/v1", routes)
