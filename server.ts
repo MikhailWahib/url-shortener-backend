@@ -33,10 +33,10 @@ app.get("/health-check", async (req: Request, res: Response) => {
 
 // start server
 db.connect()
-	.then(() => {
-		console.log("Database connected ✔")
-		// createUsersTable()
-		// createUrlsTable()
+	.then((client) => {
+		createUsersTable()
+		createUrlsTable()
+		client.release()
 	})
 	.then(() => {
 		app.listen(port, () => {
