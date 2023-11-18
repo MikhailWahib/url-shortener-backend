@@ -74,3 +74,9 @@ export const getUserFromDB = async (username: string, password: string) => {
 	const result = await db.query(query, [username, password])
 	return result
 }
+
+export const getUserUrlsFromDB = async (userId: number | undefined) => {
+	const query = `SELECT id, original_url AS "originalUrl", short_url AS "shortUrl" FROM urls WHERE user_id = $1;`
+	const result = await db.query(query, [userId])
+	return result
+}

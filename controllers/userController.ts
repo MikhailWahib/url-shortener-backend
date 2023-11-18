@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { validationResult } from "express-validator"
 import { signToken } from "../lib/signToken"
-import { getUserFromDB, insertUserToDB } from "../db/lib"
+import { getUserFromDB, getUserUrlsFromDB, insertUserToDB } from "../db/lib"
 
 export const handleRegister = async (req: Request, res: Response) => {
 	try {
@@ -67,5 +67,25 @@ export const handleLogout = async (req: Request, res: Response) => {
 		res.status(200).json({ message: "logged out" })
 	} catch (error) {
 		console.error(error)
+	}
+}
+
+export const getUserUrls = async (req: Request, res: Response) => {
+	try {
+		const userId = req.userId
+
+		console.log(userId)
+
+		const result = await getUserUrlsFromDB(userId)
+
+		if (result.rows.length === 0) {
+			return res.status(404).json({ error: "No URLs found" })
+		}
+
+		res.status(200).json({
+			urls: result.rows,
+		})
+	} catch (e) {
+		console.error(e)
 	}
 }

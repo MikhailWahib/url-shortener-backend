@@ -1,4 +1,4 @@
-import app from "../../server"
+import app from "../server"
 import request from "supertest"
 
 const username = Math.random().toString(36).slice(2, 10)
@@ -112,5 +112,16 @@ describe("GET /s/{shortCode}", () => {
 
 		expect(response.status).toBe(302)
 		expect(response.headers.location).toBe("https://www.google.com")
+	})
+})
+
+describe("GET /api/v1/urls", () => {
+	it("Get user's short urls", async () => {
+		const response = await request(app)
+			.get("/api/v1/users/urls")
+			.set("Cookie", authToken)
+
+		expect(response.status).toBe(200)
+		expect(response.body.urls).toBeDefined()
 	})
 })
