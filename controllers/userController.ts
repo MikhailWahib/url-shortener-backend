@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { validationResult } from "express-validator"
 import { signToken } from "../lib/signToken"
 import { getUserFromDB, getUserUrlsFromDB, insertUserToDB } from "../db/lib"
+import bcrypt from "bcrypt"
 
 export const handleRegister = async (req: Request, res: Response) => {
 	try {
@@ -44,7 +45,15 @@ export const handleLogin = async (req: Request, res: Response) => {
 		const result = await getUserFromDB(username, password)
 
 		if (result.rows.length === 0) {
-			return res.status(401).json({ error: "Invalid username or password" })
+			return res.status(401).json({ error: "Invalid credentials" })
+		}
+
+		const hashedPassword = result.rows[0].password
+
+		const isPasswordValid = await bcrypt.compare(password, hashedPassword)
+
+		if (!isPasswordValid) {
+			return res.status(401).json({ error: "Invalid credentials" })
 		}
 
 		const user = result.rows[0]

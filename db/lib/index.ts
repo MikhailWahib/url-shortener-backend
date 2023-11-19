@@ -1,5 +1,6 @@
 import { QueryResult } from "pg"
 import { db } from ".."
+import bcrypt from "bcrypt"
 
 export const createUrlsTable = async (): Promise<void> => {
 	const query = `
@@ -60,8 +61,11 @@ export const insertUserToDB = async (username: string, password: string) => {
 		}
 	}
 
+	const salt = await bcrypt.genSalt()
+	const hashedPassword = await bcrypt.hash(password, salt)
+
 	const query = `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;`
-	const result = await db.query(query, [username, password])
+	const result = await db.query(query, [username, hashedPassword])
 
 	return {
 		result,
@@ -70,8 +74,8 @@ export const insertUserToDB = async (username: string, password: string) => {
 }
 
 export const getUserFromDB = async (username: string, password: string) => {
-	const query = `SELECT * FROM users WHERE username = $1 AND password = $2;`
-	const result = await db.query(query, [username, password])
+	const query = `SELECT * FROM users WHERE username = $1;`
+	const result = await db.query(query, [username])
 	return result
 }
 
