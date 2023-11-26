@@ -8,7 +8,8 @@ export const createUrlsTable = async (): Promise<void> => {
             id SERIAL PRIMARY KEY,
 			user_id INTEGER REFERENCES users(id),
             original_url TEXT NOT NULL,
-            short_url TEXT NOT NULL UNIQUE
+            short_url TEXT NOT NULL UNIQUE,
+			views INTEGER DEFAULT 0
         );
     `
 	await db.query(query)
