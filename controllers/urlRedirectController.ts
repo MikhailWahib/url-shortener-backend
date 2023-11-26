@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { getUrlFromDB } from "../db/lib"
+import { getUrlFromDB, incrementUrlViews } from "../db/lib"
 
 export const handleRedirect = async (req: Request, res: Response) => {
 	try {
@@ -16,6 +16,8 @@ export const handleRedirect = async (req: Request, res: Response) => {
 		}
 
 		res.redirect(result.rows[0].original_url)
+
+		incrementUrlViews(shortUrl)
 	} catch (error) {
 		console.error(error)
 	}

@@ -85,3 +85,8 @@ export const getUserUrlsFromDB = async (userId: number | undefined) => {
 	const result = await db.query(query, [userId])
 	return result
 }
+
+export const incrementUrlViews = async (shortUrlCode: string) => {
+	const query = `UPDATE urls SET views = views + 1 WHERE short_url = $1 RETURNING *;`
+	await db.query(query, [shortUrlCode])
+}
