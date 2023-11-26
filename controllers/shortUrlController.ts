@@ -37,6 +37,7 @@ export const handleShortenUrl = async (req: Request, res: Response) => {
 			id: result.rows[0].id,
 			shortUrl: shortUrl,
 			originalUrl: result.rows[0].original_url,
+			views: result.rows[0].views,
 		})
 	} catch (error) {
 		console.error(error)

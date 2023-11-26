@@ -83,8 +83,6 @@ export const getUserUrls = async (req: Request, res: Response) => {
 	try {
 		const userId = req.userId
 
-		console.log(userId)
-
 		const result = await getUserUrlsFromDB(userId)
 
 		if (result.rows.length === 0) {
