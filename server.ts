@@ -29,12 +29,13 @@ app.use(cookieParser())
 app.use(morgan("common"))
 
 // routes
+app.get("/", (req: Request, res: Response) => {
+	res.send(
+		"Visit the API Repository for the documentation: https://github.com/MikhaiWahib/url-shortener-backend"
+	)
+})
 app.use("/api/v1", routes)
 app.get("/s/:shortUrl", handleRedirect)
-
-app.get("/health-check", async (req: Request, res: Response) => {
-	res.status(200).json({ message: "Hello World!" })
-})
 
 // start server
 db.connect()
