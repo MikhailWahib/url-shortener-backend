@@ -9,7 +9,7 @@ export const createUrlsTable = async (): Promise<void> => {
 			user_id INTEGER REFERENCES users(id),
             original_url TEXT NOT NULL,
             short_url TEXT NOT NULL UNIQUE,
-			views INTEGER DEFAULT 0
+			clicks INTEGER DEFAULT 0
         );
     `
 	await db.query(query)
@@ -81,12 +81,12 @@ export const getUserFromDB = async (username: string, password: string) => {
 }
 
 export const getUserUrlsFromDB = async (userId: number | undefined) => {
-	const query = `SELECT id, original_url AS "originalUrl", short_url AS "shortUrl", views FROM urls WHERE user_id = $1;`
+	const query = `SELECT id, original_url AS "originalUrl", short_url AS "shortUrl", clicks FROM urls WHERE user_id = $1;`
 	const result = await db.query(query, [userId])
 	return result
 }
 
-export const incrementUrlViews = async (shortUrlCode: string) => {
-	const query = `UPDATE urls SET views = views + 1 WHERE short_url = $1 RETURNING *;`
+export const incrementUrlClicks = async (shortUrlCode: string) => {
+	const query = `UPDATE urls SET clicks = clicks + 1 WHERE short_url = $1 RETURNING *;`
 	await db.query(query, [shortUrlCode])
 }
