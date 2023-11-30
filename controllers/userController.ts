@@ -89,8 +89,17 @@ export const getUserUrls = async (req: Request, res: Response) => {
 			return res.status(404).json({ error: "No URLs found" })
 		}
 
+		const modifiedUrls = result.rows.map((url) => {
+			return {
+				id: url.id,
+				originalUrl: url.originalUrl,
+				shortUrl: `${req.protocol}://${req.get("host")}/s/${url.shortUrl}`,
+				clicks: url.clicks,
+			}
+		})
+
 		res.status(200).json({
-			urls: result.rows,
+			urls: modifiedUrls,
 		})
 	} catch (e) {
 		console.error(e)

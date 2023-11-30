@@ -10,7 +10,7 @@ router.use("/users", userRoutes)
 
 router.post("/shorten", urlValdiation, protect, handleShortenUrl)
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", protect, async (req: Request, res: Response) => {
 	res.send("Hello World!")
 })
 
