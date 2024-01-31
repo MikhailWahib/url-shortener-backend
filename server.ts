@@ -7,9 +7,9 @@ import morgan from "morgan"
 import routes from "./routes"
 
 import { db } from "./db"
-import { createUrlsTable, createUsersTable } from "./db/lib"
 
 import { handleRedirect } from "./controllers/urlRedirectController"
+import { startServer } from "./lib/startServer"
 
 dotenv.config()
 
@@ -37,20 +37,6 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/v1", routes)
 app.get("/s/:shortUrl", handleRedirect)
 
-// start server
-db.connect()
-	.then((client) => {
-		createUsersTable()
-		createUrlsTable()
-		client.release()
-	})
-	.then(() => {
-		app.listen(port, () => {
-			console.log(`⚡️[server]: Server is running at port ${port}`)
-		})
-	})
-	.catch((err) => {
-		console.error(err)
-	})
+startServer(app, db, 3000)
 
 export default app
