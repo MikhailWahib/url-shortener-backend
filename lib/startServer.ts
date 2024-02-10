@@ -1,4 +1,4 @@
-// import { createUrlsTable, createUsersTable } from "../db/lib"
+import { createUrlsTable, createUsersTable } from "../db/lib"
 export const startServer = async (server: any, db: any, port: number) => {
 	try {
 		await db.connect()
