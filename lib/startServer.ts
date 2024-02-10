@@ -4,8 +4,8 @@ export const startServer = async (server: any, db: any, port: number) => {
 		await db.connect()
 		console.log("Connected to database")
 
-		// createUrlsTable()
-		// createUsersTable()
+		createUrlsTable()
+		createUsersTable()
 
 		server.listen(port, () => {
 			console.log(`Server running on port ${port}`)
