@@ -12,7 +12,6 @@ npm install
 npm run dev # starts dev server
 npm run build # builds production
 npm run start # starts production server
-npm test # runs tests
 ```
 
 **API Endpoints:**
